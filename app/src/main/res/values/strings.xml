@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TruckApp</string>
+    <string name="login_error_incorrect_password">Incorrect password</string>
+    <string name="login_error_user_does_not_exist">Username does not exist</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="register_error_username_exists">Username already exists</string>
+    <string name="register_info_register_success">Register completed</string>
+    <string name="menu_main_account">Account</string>
+    <string name="menu_main_home">Home</string>
+    <string name="menu_main_my_orders">My Orders</string>
+</resources>
