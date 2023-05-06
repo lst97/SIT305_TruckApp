@@ -1,5 +1,6 @@
 package com.example.truckapp.controllers;
 
+import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.persistence.DbContext;
 import com.example.truckapp.services.authenticate.AccessToken;
@@ -44,15 +45,19 @@ public class TruckController implements IController {
     public void delete() {
 
     }
-
-    public List<Truck> getAvailableTruck() {
+    public List<Truck> getAvailableTrucks() {
         DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
-        return dbContext.getAvailableTruck();
+        return dbContext.getAvailableTrucks();
     }
 
     public Truck getTruckByName(String name) {
         DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
         return dbContext.getTruckByName(name);
+    }
+
+    public Truck getTruckById(int id) {
+        DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
+        return dbContext.getTruckById(id);
     }
 
     @Override

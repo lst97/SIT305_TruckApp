@@ -1,6 +1,7 @@
 package com.example.truckapp.controllers;
 
 import com.example.truckapp.models.order.Order;
+import com.example.truckapp.models.user.User;
 import com.example.truckapp.persistence.DbContext;
 
 import java.util.List;
@@ -24,6 +25,11 @@ public class OrderController implements IController{
     public boolean create(Object order) {
         DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
         return dbContext.createOrder((Order) order);
+    }
+
+    public List<Order> getOrders(User user) {
+        DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
+        return dbContext.getTruckOrders(user);
     }
 
     @Override

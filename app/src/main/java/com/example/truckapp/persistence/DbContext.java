@@ -17,9 +17,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.time.LocalDate;
 
 public class DbContext implements IServices {
     // PostgresSQL
@@ -446,7 +448,77 @@ public class DbContext implements IServices {
         return serviceName;
     }
 
-    public List<Truck> getAvailableTruck() {
+    public Truck getTruckById(int id){
+        if (!isPermitted()) {return null;}
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            Connect();
+            stmt = connection.prepareStatement("SELECT * FROM trucks WHERE id = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Truck(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getString("title"),
+                    rs.getString("image"),
+                    rs.getDouble("price"),
+                    rs.getInt("type"),
+                    rs.getString("location"),
+                    rs.getDouble("latitude"),
+                    rs.getDouble("longitude")
+                );
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            Disconnect(stmt, rs);
+        }
+        return null;
+    }
+
+    public List<Order> getTruckOrders(User user){
+        if(!isPermitted()){return null;}
+        List<Order> orders = new ArrayList<>();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            Connect();
+            stmt = connection.prepareStatement(
+                "SELECT * FROM orders WHERE user_id = ?"
+            );
+            stmt.setInt(1, user.getId());
+            rs = stmt.executeQuery();
+
+            while(rs.next()){
+                orders.add(new Order(
+                    rs.getInt("id"),
+                    rs.getInt("user_id"),
+                    rs.getInt("vehicle_id"),
+                    rs.getString("receiver_name"),
+                    LocalDate.parse(rs.getDate("pickup_date").toString()),
+                    LocalTime.parse( rs.getTime("pickup_time").toString()),
+                    rs.getString("pickup_location"),
+                    rs.getString("good_type"),
+                    rs.getDouble("weight"),
+                    rs.getDouble("width"),
+                    rs.getDouble("length"),
+                    rs.getDouble("height"),
+                    TruckTypes.getTruckTypeName(rs.getInt("vehicle_type"))
+                ));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            Disconnect(stmt, rs);
+        }
+        return orders;
+    }
+
+    public List<Truck> getAvailableTrucks() {
         if (!isPermitted()) {return null;}
 
         List<Truck> trucks = new ArrayList<>();
@@ -462,7 +534,6 @@ public class DbContext implements IServices {
             );
             rs = stmt.executeQuery();
 
-            //name, description, title, image, price, type, location, latitude, longitude
             while (rs.next()) {
                 trucks.add(new Truck(
                     rs.getInt("id"),

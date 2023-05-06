@@ -14,31 +14,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truckapp.R;
+import com.example.truckapp.activities.OrderViewerActivity;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.utils.ImageUtil;
 
 import java.util.List;
 
-public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder> {
+public class TruckRecyclerViewAdapter extends RecyclerView.Adapter<TruckRecyclerViewAdapter.ViewHolder> {
 
     Context context;
     List<Truck> trucks;
 
-    public HomeRecyclerViewAdapter(Context context, List<Truck> trucks) {
+    public TruckRecyclerViewAdapter(Context context, List<Truck> trucks) {
         this.context = context;
         this.trucks = trucks;
     }
 
     @NonNull
     @Override
-    public HomeRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TruckRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_avaliable_truck, parent, false);
-        return new HomeRecyclerViewAdapter.ViewHolder(view);
+        return new TruckRecyclerViewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeRecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TruckRecyclerViewAdapter.ViewHolder holder, int position) {
         holder.titleView.setText(trucks.get(position).getName());
         holder.descriptionView.setText(trucks.get(position).getDescription());
         Bitmap bm = ImageUtil.decodeImage(trucks.get(position).getImage());
@@ -48,6 +49,14 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT, "Check out this truck: " + trucks.get(position).getName());
             context.startActivity(Intent.createChooser(intent, "Share with"));
+        });
+
+        // set card on click listener
+        holder.itemView.setOnClickListener(v -> {
+            // TODO: check if the truck is not available
+            Intent intent = new Intent(context, OrderViewerActivity.class);
+            intent.putExtra("truckId", trucks.get(position).getId());
+            context.startActivity(intent);
         });
     }
 

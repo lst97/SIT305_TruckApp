@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truckapp.R;
-import com.example.truckapp.adapters.HomeRecyclerViewAdapter;
+import com.example.truckapp.adapters.TruckRecyclerViewAdapter;
 import com.example.truckapp.controllers.TruckController;
 import com.example.truckapp.models.truck.Truck;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
 
         RecyclerView truckRecyclerView = findViewById(R.id.home_recycler_view);
         setupTruckModel();
-        HomeRecyclerViewAdapter adapter = new HomeRecyclerViewAdapter(this, trucks);
+        TruckRecyclerViewAdapter adapter = new TruckRecyclerViewAdapter(this, trucks);
         truckRecyclerView.setAdapter(adapter);
         truckRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -51,17 +51,17 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
          if (item.getItemId() == R.id.menu_main_items_home) {
              // go to home
              Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
              startActivity(intent);
              return true;
          } else if (item.getItemId() == R.id.menu_main_items_account) {
-             // handle menu item 2
+             // NO REQUIRED FROM TASK
              return true;
          } else if (item.getItemId() == R.id.menu_main_items_my_orders) {
-             // handle menu item 3
+             Intent intent = new Intent(HomeActivity.this, OrderActivity.class);
+             startActivity(intent);
              return true;
          } else {
              return super.onOptionsItemSelected(item);
@@ -70,6 +70,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setupTruckModel() {
         TruckController truckController = TruckController.getInstance();
-        trucks = truckController.getAvailableTruck();
+        trucks = truckController.getAvailableTrucks();
     }
 }
