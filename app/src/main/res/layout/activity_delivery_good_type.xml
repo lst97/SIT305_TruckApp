@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/goodtype_title_label"
+        android:layout_width="385dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="New Delivery"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="377dp"
+        android:layout_height="600dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="65dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goodtype_title_label">
+
+        <TextView
+            android:id="@+id/goodtype_type_label"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Good Type:"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/goodtype_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/goodtype_type_other_input"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Other"
+            android:inputType="text" />
+
+        <TextView
+            android:id="@+id/goodtype_wd_label"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Weight and Dimension:"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/goodtype_weight_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Weight"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/goodtype_width_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Width"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="9dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/goodtype_length_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Length"
+                android:inputType="numberDecimal" />
+
+            <EditText
+                android:id="@+id/goodtype_height_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Height"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/goodtype_vehicle_type_label"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Vehicle Type:"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/goodtype_vehicle_type_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/goodtype_vehicle_type_other_input"
+            android:layout_width="match_parent"
+            android:layout_height="13dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Other"
+            android:inputType="text" />
+
+        <TextView
+            android:id="@+id/goodtype_message"
+            android:layout_width="match_parent"
+            android:layout_height="9dp"
+            android:layout_weight="1"
+            android:gravity="center|center_horizontal"
+            android:text="create_order_message"
+            android:textColor="#FF5722"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/goodtype_create_order_btn"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:text="Create Order"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

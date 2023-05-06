@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import androidx.core.content.ContextCompat;
 
@@ -81,6 +83,13 @@ public class TruckApp extends Activity {
         StrictMode.setThreadPolicy(policy);
 
         initializeServices();
+
+        // clear user session (the app do not support remember me function)
+        CookieService cookieService = (CookieService) ServicesController.getInstance().getService("CookieService");
+        cookieService.removeUserSession();
+
+        // this should the backend job, but since I did not create the backend
+        // I have to do it here for initialize the DB
         updateTrucksImage(); // update the trucks image from URL to BASE64 String
 
         Intent intent = new Intent(this, LoginActivity.class);

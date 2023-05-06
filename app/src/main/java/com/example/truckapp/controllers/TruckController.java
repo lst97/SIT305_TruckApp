@@ -2,12 +2,10 @@ package com.example.truckapp.controllers;
 
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.persistence.DbContext;
-import com.example.truckapp.services.IServices;
 import com.example.truckapp.services.authenticate.AccessToken;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TruckController implements IController {
     private static TruckController instance;
@@ -27,8 +25,8 @@ public class TruckController implements IController {
     }
 
     @Override
-    public void create() {
-
+    public boolean create(Object truck) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -45,6 +43,16 @@ public class TruckController implements IController {
     @Override
     public void delete() {
 
+    }
+
+    public List<Truck> getAvailableTruck() {
+        DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
+        return dbContext.getAvailableTruck();
+    }
+
+    public Truck getTruckByName(String name) {
+        DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
+        return dbContext.getTruckByName(name);
     }
 
     @Override

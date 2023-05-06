@@ -14,15 +14,17 @@ import com.example.truckapp.R;
 import com.example.truckapp.adapters.HomeRecyclerViewAdapter;
 import com.example.truckapp.controllers.TruckController;
 import com.example.truckapp.models.truck.Truck;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 // Home
 public class HomeActivity extends AppCompatActivity {
 
     List<Truck> trucks;
+
+    FloatingActionButton addDeliveryBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +35,13 @@ public class HomeActivity extends AppCompatActivity {
         HomeRecyclerViewAdapter adapter = new HomeRecyclerViewAdapter(this, trucks);
         truckRecyclerView.setAdapter(adapter);
         truckRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
 
+        addDeliveryBtn = findViewById(R.id.home_floating_new_order);
+        addDeliveryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, NewDeliveryActivity.class);
+            startActivity(intent);
+        });
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -59,13 +66,10 @@ public class HomeActivity extends AppCompatActivity {
          } else {
              return super.onOptionsItemSelected(item);
          }
-
     }
 
     private void setupTruckModel() {
         TruckController truckController = TruckController.getInstance();
-        trucks = truckController.read().stream()
-            .map(obj -> (Truck) obj) // cast the object to Truck
-            .collect(Collectors.toList()); // collect the Truck to a list
+        trucks = truckController.getAvailableTruck();
     }
 }

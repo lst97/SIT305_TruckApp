@@ -14,6 +14,7 @@ import com.example.truckapp.R;
 import com.example.truckapp.controllers.ServicesController;
 import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.authenticate.AuthenticateService;
+import com.example.truckapp.services.cookie.CookieService;
 
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         // ThreadPolicy is needed to allow network requests on main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+
 
         // Find views by ID
         usernameEditText = findViewById(R.id.login_usernameInput);
@@ -77,7 +79,14 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // If authentication succeeds, start MainActivity
+                    // remember the user session
+                    CookieService cookieService = (CookieService) servicesController.getService("CookieService");
+                    if (cookieService == null) {
+                        throw new NullPointerException("CookieService not found");
+                    }
+                    cookieService.addUserSession(userCredentials);
+
+                    // start HomeActivity
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish(); // Prevents user from going back to LoginActivity by pressing back button

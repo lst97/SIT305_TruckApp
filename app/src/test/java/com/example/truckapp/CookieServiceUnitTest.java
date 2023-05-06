@@ -77,7 +77,7 @@ public class CookieServiceUnitTest {
         when(contextMock.getSharedPreferences("test", MODE_PRIVATE)).thenReturn(null);
 
         // Act
-        cookieService.addSession(user);
+        cookieService.addUserSession(user);
 
         // Assert
         Gson gson = new Gson();

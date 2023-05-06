@@ -5,12 +5,17 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.truckapp.adapters.LocalDateTimeAdapter;
 import com.example.truckapp.controllers.ServicesController;
+import com.example.truckapp.fasterxml.modules.LocalDateTimeModule;
 import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.log.LoggingService;
 import com.google.gson.Gson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.GsonBuilder;
+
+import java.time.LocalDateTime;
 
 import kotlin.NotImplementedError;
 
@@ -49,13 +54,14 @@ public class CookieService implements ICookie {
         SharedPreferences prefs = applicationContext.getSharedPreferences(CookieTypes.SESSION, Context.MODE_PRIVATE);
 
         // check if prefs contains user session
-        if (!prefs.contains(CookieTypes.SESSION)){
+        if (!prefs.contains("data")){
             return null;
         }
 
         String jsonString = prefs.getString("data", "");
         // Create an ObjectMapper instance
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new LocalDateTimeModule());
 
         // Convert JSON string to User object
         User user = null;
@@ -75,7 +81,19 @@ public class CookieService implements ICookie {
     }
 
     @Override
-    public void addSession(User user){
+    public void removeUserSession(){
+        SharedPreferences prefs = applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE);
+
+        // check if the prefs name already exists
+        if (prefs.contains("data")){
+            // prefs name already exists
+            // remove the prefs name
+            applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE).edit().remove("data").apply();
+        }
+    }
+
+    @Override
+    public void addUserSession(User user){
 
         SharedPreferences prefs = applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE);
 
@@ -90,7 +108,9 @@ public class CookieService implements ICookie {
         SharedPreferences.Editor editor = prefs.edit();
 
         // put the object into SharedPreferences as a string
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
         String json = gson.toJson(user);
         editor.putString("data", json);
         editor.apply();

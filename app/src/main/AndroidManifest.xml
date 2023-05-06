@@ -28,6 +28,13 @@
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.HomeActivity" />
         <activity android:name=".activities.RegisterActivity" />
+        <activity
+            android:name=".activities.NewDeliveryActivity"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+            />
+        <activity android:name=".activities.GoodTypeActivity"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+            />
 
     </application>
 

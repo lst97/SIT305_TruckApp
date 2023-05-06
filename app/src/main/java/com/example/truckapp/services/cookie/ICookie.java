@@ -6,7 +6,10 @@ import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.IServices;
 
 public interface ICookie extends IServices {
-    void addSession(User user);
+    void addUserSession(User user);
+    User getUserSession();
+    void removeUserSession();
+
     // Like normal shared preferences
     void addCookie(String name);
     void removeCookie();

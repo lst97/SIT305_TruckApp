@@ -69,7 +69,7 @@ public class ServicesController implements IServices, IController {
     }
 
     @Override
-    public void create() {
+    public boolean create(Object object) {
         // not used for ServicesController
         throw new UnsupportedOperationException();
     }

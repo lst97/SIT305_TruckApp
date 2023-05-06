@@ -59,3 +59,21 @@ VALUES
   ('Truck 8', 'Lorem ipsum dolor sit amet', 'Title 8', 'https://example.com/truck8.jpg', 8000, 4, 'Location 8', 6.789, 7.890),
   ('Truck 9', 'Lorem ipsum dolor sit amet', 'Title 9', 'https://example.com/truck9.jpg', 9000, 1, 'Location 9', 8.901, 9.012),
   ('Truck 10', 'Lorem ipsum dolor sit amet', 'Title 10', 'https://example.com/truck10.jpg', 10000, 2, 'Location 10', 1.234, 2.345);
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    vehicle_id INTEGER NOT NULL,
+    receiver_name VARCHAR(255) NOT NULL,
+    pickup_date DATE NOT NULL,
+    pickup_time TIME NOT NULL,
+    pickup_location VARCHAR(255) NOT NULL,
+    good_type VARCHAR(255) NOT NULL,
+    weight DECIMAL(10, 2) NOT NULL,
+    width DECIMAL(10, 2) NOT NULL,
+    length DECIMAL(10, 2) NOT NULL,
+    height DECIMAL(10, 2) NOT NULL,
+    vehicle_type VARCHAR(20) NOT NULL,
+    CONSTRAINT fk_user_orders FOREIGN KEY (user_id) REFERENCES users (id),
+    CONSTRAINT fk_vehicle_orders FOREIGN KEY (vehicle_id) REFERENCES trucks (id)
+);
