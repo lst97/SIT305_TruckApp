@@ -5,6 +5,8 @@ import com.example.truckapp.services.IServices;
 
 public interface IAuthenticateService extends IServices {
     User login(User userCredentials);
+
     boolean register(User userCredentials);
+
     void logout();
 }

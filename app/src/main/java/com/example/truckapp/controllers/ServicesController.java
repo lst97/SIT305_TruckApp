@@ -8,10 +8,9 @@ import java.util.List;
 
 // apply Single Responsibility Principle (SRP) for ServicesController
 public class ServicesController implements IServices, IController {
-    private final String serviceName;
     private static final List<IServices> servicesList = new ArrayList<>();
-
     private static ServicesController instance;
+    private final String serviceName;
 
     private ServicesController() {
         serviceName = ServicesController.class.getName();
@@ -26,19 +25,19 @@ public class ServicesController implements IServices, IController {
     }
 
     @Override
-    public String getServiceName(){
+    public String getServiceName() {
         return serviceName;
     }
 
-    public  void addService(String name, String className, boolean enableLoggingService) {
+    public void addService(String name, String className, boolean enableLoggingService) {
         try {
             Class<?> serviceClass = Class.forName(className);
             Constructor<?> constructor = serviceClass.getConstructor(String.class, ServicesController.class, boolean.class);
             Object instance = constructor.newInstance(name, this, enableLoggingService);
             if (instance instanceof IServices) {
                 // check if service already exists
-                for (IServices s : servicesList){
-                    if (s.getServiceName().equals(name)){
+                for (IServices s : servicesList) {
+                    if (s.getServiceName().equals(name)) {
                         throw new IllegalArgumentException("Service name already exists");
                     }
                 }
@@ -58,10 +57,10 @@ public class ServicesController implements IServices, IController {
 
         }
     }
-    
-    public IServices getService(String name){
-        for (IServices service : servicesList){
-            if (service.getServiceName().equals(name)){
+
+    public IServices getService(String name) {
+        for (IServices service : servicesList) {
+            if (service.getServiceName().equals(name)) {
                 return service;
             }
         }

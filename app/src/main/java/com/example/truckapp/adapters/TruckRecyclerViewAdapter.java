@@ -22,7 +22,6 @@ import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.services.cookie.CookieService;
 import com.example.truckapp.utils.ImageUtil;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 

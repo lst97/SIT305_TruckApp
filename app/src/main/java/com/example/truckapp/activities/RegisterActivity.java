@@ -110,14 +110,14 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // check if username is already taken
-        if(authenticateService.isUserExist(username)){
+        if (authenticateService.isUserExist(username)) {
             messageTextView.setText(R.string.register_error_username_exists);
             return;
         }
 
         // create customer user
         LocalDateTime createdDate = LocalDateTime.now();
-        User user = new User (username, PasswordHasher.hashPassword(password), fullName, createdDate, createdDate, phone, Roles.CUSTOMER);
+        User user = new User(username, PasswordHasher.hashPassword(password), fullName, createdDate, createdDate, phone, Roles.CUSTOMER);
 
         // save user to database
         if (authenticateService.register(user)) {

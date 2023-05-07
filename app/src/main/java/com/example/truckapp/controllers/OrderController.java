@@ -6,7 +6,7 @@ import com.example.truckapp.persistence.DbContext;
 
 import java.util.List;
 
-public class OrderController implements IController{
+public class OrderController implements IController {
     // singleton
     private static OrderController instance = null;
     private final ServicesController servicesController;
@@ -21,6 +21,7 @@ public class OrderController implements IController{
         }
         return instance;
     }
+
     @Override
     public boolean create(Object order) {
         DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
@@ -36,6 +37,7 @@ public class OrderController implements IController{
         DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
         return dbContext.getOrderByTruckId(id);
     }
+
     @Override
     public void update(Object object) {
 

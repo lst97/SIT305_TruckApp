@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 User userCredentials = authenticateService.login(new User(username, password));
-                if(userCredentials != null) {
+                if (userCredentials != null) {
                     // if the password is empty, it means that the password is not correct
                     if (Objects.equals(userCredentials.getPassword(), "")) {
                         messageTextView.setText(R.string.login_error_incorrect_password);

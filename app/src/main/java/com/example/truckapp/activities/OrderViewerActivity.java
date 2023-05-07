@@ -1,7 +1,6 @@
 package com.example.truckapp.activities;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.Menu;
@@ -21,8 +20,6 @@ import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.utils.ImageUtil;
 
-import java.util.List;
-
 public class OrderViewerActivity extends AppCompatActivity {
     ImageView truckImage;
     TextView fromSenderTextView;
@@ -38,6 +35,7 @@ public class OrderViewerActivity extends AppCompatActivity {
 
     Order order;
     Truck truck;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

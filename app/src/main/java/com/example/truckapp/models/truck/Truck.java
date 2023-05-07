@@ -14,7 +14,7 @@ public class Truck implements IModel {
     private double latitude;
     private double longitude;
 
-    public  Truck(int id, String name, String description, String title, String image, double price, int type, String location, double latitude, double longitude) {
+    public Truck(int id, String name, String description, String title, String image, double price, int type, String location, double latitude, double longitude) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -109,7 +109,6 @@ public class Truck implements IModel {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-
 
 
 }

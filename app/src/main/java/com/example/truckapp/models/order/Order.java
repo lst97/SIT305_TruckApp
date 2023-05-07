@@ -2,7 +2,6 @@ package com.example.truckapp.models.order;
 
 import com.example.truckapp.models.IModel;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -122,10 +121,6 @@ public class Order implements IModel {
         this.goodType = goodType;
     }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
-    }
-
     public Double getWeight() {
         return weight;
     }
@@ -160,6 +155,10 @@ public class Order implements IModel {
 
     public String getVehicleType() {
         return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
     // getters and setters omitted for brevity

@@ -1,13 +1,12 @@
 package com.example.truckapp.models.truck;
 
 public class TruckTypes {
+    public static String[] TRUCK_TYPES = {"VAN", "TRUCK", "REFRIGERATE", "MINI_TRUCK", "OTHER"};
     static int VAN = 1;
     static int TRUCK = 2;
     static int REFRIGERATE = 3;
     static int MINI_TRUCK = 4;
     static int OTHER = 5;
-
-    public static String[] TRUCK_TYPES = {"VAN", "TRUCK", "REFRIGERATE", "MINI_TRUCK", "OTHER"};
 
     public static int getTruckTypeId(String type) {
         switch (type) {

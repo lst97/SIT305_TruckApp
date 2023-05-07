@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.truckapp.R;
@@ -47,6 +46,7 @@ public class NewDeliveryActivity extends AppCompatActivity {
         // Set the adapter to the spinner
         truckSpinner.setAdapter(adapter);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

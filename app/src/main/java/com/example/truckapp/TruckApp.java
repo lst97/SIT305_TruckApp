@@ -1,15 +1,12 @@
 package com.example.truckapp;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 import androidx.core.content.ContextCompat;
 
@@ -24,9 +21,6 @@ import com.example.truckapp.services.cookie.CookieService;
 import com.example.truckapp.services.log.LoggingService;
 import com.example.truckapp.utils.ImageUtil;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +39,7 @@ public class TruckApp extends Activity {
         servicesController.addService("AuthenticateService", AuthenticateService.class.getName(), true);
     }
 
-    private void updateTrucksImage(){
+    private void updateTrucksImage() {
 
         TruckController truckController = TruckController.getInstance();
 
@@ -66,10 +60,10 @@ public class TruckApp extends Activity {
         drawables.add(ContextCompat.getDrawable(this, R.drawable.nelson_realistic_van_natural_light_city_road_ea321f5f_a00b_4c9c_89a3_61365f8b85ed));
 
         // only for 10 mock trucks data
-        for(int i = 0; i < trucks.size(); i++){
+        for (int i = 0; i < trucks.size(); i++) {
 
             Drawable drawable = drawables.get(i);
-            Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             trucks.get(i).setImage(ImageUtil.encodeImage(bitmap));
 
             truckController.update(trucks.get(i), new AccessToken());

@@ -10,9 +10,8 @@ import com.example.truckapp.controllers.ServicesController;
 import com.example.truckapp.fasterxml.modules.LocalDateTimeModule;
 import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.log.LoggingService;
-import com.google.gson.Gson;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDateTime;
@@ -21,28 +20,15 @@ import kotlin.NotImplementedError;
 
 
 public class CookieService implements ICookie {
+    private static boolean status = false;
     private final String serviceName;
     private ServicesController servicesController;
     private Context applicationContext;
-    private  LoggingService loggingService = null;
+    private LoggingService loggingService = null;
 
-    private static boolean status = false;
-    public int start(){
-        status = true;
-        return 0;
-    }
-    public int stop(){
-        status = false;
-        return 0;
-    }
-
-    public void setContext(Context context){
-        applicationContext = context;
-    }
-
-    public CookieService(String name, ServicesController servicesCtrl, boolean useLoggingService){
+    public CookieService(String name, ServicesController servicesCtrl, boolean useLoggingService) {
         servicesController = servicesCtrl;
-        if (useLoggingService){
+        if (useLoggingService) {
             loggingService = (LoggingService) servicesController.getService(name);
         }
 
@@ -50,11 +36,25 @@ public class CookieService implements ICookie {
         start();
     }
 
-    public User getUserSession(){
+    public int start() {
+        status = true;
+        return 0;
+    }
+
+    public int stop() {
+        status = false;
+        return 0;
+    }
+
+    public void setContext(Context context) {
+        applicationContext = context;
+    }
+
+    public User getUserSession() {
         SharedPreferences prefs = applicationContext.getSharedPreferences(CookieTypes.SESSION, Context.MODE_PRIVATE);
 
         // check if prefs contains user session
-        if (!prefs.contains("data")){
+        if (!prefs.contains("data")) {
             return null;
         }
 
@@ -71,7 +71,7 @@ public class CookieService implements ICookie {
             e.printStackTrace();
         }
 
-        if(user == null){
+        if (user == null) {
             return null;
         }
 
@@ -81,11 +81,11 @@ public class CookieService implements ICookie {
     }
 
     @Override
-    public void removeUserSession(){
+    public void removeUserSession() {
         SharedPreferences prefs = applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE);
 
         // check if the prefs name already exists
-        if (prefs.contains("data")){
+        if (prefs.contains("data")) {
             // prefs name already exists
             // remove the prefs name
             applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE).edit().remove("data").apply();
@@ -93,12 +93,12 @@ public class CookieService implements ICookie {
     }
 
     @Override
-    public void addUserSession(User user){
+    public void addUserSession(User user) {
 
         SharedPreferences prefs = applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE);
 
         // check if the prefs name already exists
-        if (prefs.contains("data")){
+        if (prefs.contains("data")) {
             // prefs name already exists
             // remove the prefs name
             applicationContext.getSharedPreferences(CookieTypes.SESSION, MODE_PRIVATE).edit().remove("data").apply();

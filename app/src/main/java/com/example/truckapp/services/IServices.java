@@ -21,8 +21,10 @@ public interface IServices {
     default int start() throws SQLException {
         return 0;
     }
-    default int stop(){
+
+    default int stop() {
         return 0;
     }
-     String getServiceName();
+
+    String getServiceName();
 }

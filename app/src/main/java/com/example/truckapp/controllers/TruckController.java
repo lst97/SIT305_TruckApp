@@ -1,6 +1,5 @@
 package com.example.truckapp.controllers;
 
-import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.persistence.DbContext;
 import com.example.truckapp.services.authenticate.AccessToken;
@@ -10,8 +9,8 @@ import java.util.List;
 
 public class TruckController implements IController {
     private static TruckController instance;
-    private List<Truck> trucks;
     private final ServicesController servicesController;
+    private List<Truck> trucks;
 
 
     private TruckController() {
@@ -45,6 +44,7 @@ public class TruckController implements IController {
     public void delete() {
 
     }
+
     public List<Truck> getAvailableTrucks() {
         DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
         return dbContext.getAvailableTrucks();

@@ -1,5 +1,4 @@
 package com.example.truckapp.persistence;
-import android.os.StrictMode;
 
 import com.example.truckapp.controllers.ServicesController;
 import com.example.truckapp.models.order.Order;
@@ -9,7 +8,6 @@ import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.IServices;
 import com.example.truckapp.services.authenticate.AccessToken;
 import com.example.truckapp.services.authenticate.AuthenticateService;
-import com.example.truckapp.services.cookie.CookieService;
 import com.example.truckapp.services.log.LogTypes;
 import com.example.truckapp.services.log.LoggingService;
 
@@ -20,37 +18,45 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.time.LocalDate;
 
 public class DbContext implements IServices {
-    // PostgresSQL
-    private static String serviceName = "DatabaseService";
-    private LoggingService loggingService = null;
-    private Connection connection;
-    private final ServicesController servicesController;
-
-    public void setAccessToken(AccessToken accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public AccessToken accessToken;
     private static final String HOST = "10.0.2.2";
     private static final String PORT = "5432";
     private static final String DB_NAME = "sit305";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "password";
     private static final String url = "jdbc:postgresql://" + HOST + ":" + PORT + "/" + DB_NAME;
+    // PostgresSQL
+    private static String serviceName = "DatabaseService";
+    private final ServicesController servicesController;
+    public AccessToken accessToken;
+    private LoggingService loggingService = null;
+    private Connection connection;
     private boolean status;
+    public DbContext(String serviceName, ServicesController servicesCtrl, boolean useLoggingService) throws SQLException {
+        servicesController = servicesCtrl;
+        if (useLoggingService) {
+            loggingService = (LoggingService) servicesController.getService("LoggingService");
+        }
+        DbContext.serviceName = serviceName;
+        start();
+    }
+
+    public void setAccessToken(AccessToken accessToken) {
+        this.accessToken = accessToken;
+    }
+
     private void OnConfiguring() throws SQLException {
         // Test connection
         Connect();
         // use LoggingService to log the connection status
-        if (loggingService != null){
-            if(connection != null){
+        if (loggingService != null) {
+            if (connection != null) {
                 loggingService.log("Database connection status: " + true, LogTypes.INFO);
             } else {
                 loggingService.log("Database connection status: " + false, LogTypes.ERROR);
@@ -60,40 +66,24 @@ public class DbContext implements IServices {
         connection = null;
     }
 
-    public DbContext(String serviceName, ServicesController servicesCtrl, boolean useLoggingService) throws SQLException {
-        servicesController = servicesCtrl;
-        if (useLoggingService){
-            loggingService = (LoggingService) servicesController.getService("LoggingService");
-        }
-        DbContext.serviceName = serviceName;
-        start();
-    }
-
     private void Connect() {
         if (connection == null) {
             Thread thread = new Thread(new Runnable() {
                 @Override
-                public void run()
-                {
-                    try
-                    {
+                public void run() {
+                    try {
                         Class.forName("org.postgresql.Driver");
                         connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
                         System.out.println("connected:" + true);
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             });
             thread.start();
-            try
-            {
+            try {
                 thread.join();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
                 this.status = false;
             }
@@ -111,6 +101,7 @@ public class DbContext implements IServices {
         }
         return false;
     }
+
     private void Disconnect(PreparedStatement stmt, ResultSet rs) {
         try {
             if (rs != null) rs.close();
@@ -126,7 +117,7 @@ public class DbContext implements IServices {
         return false;
     }
 
-    public User validateUser(String username){
+    public User validateUser(String username) {
         User user = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -151,7 +142,7 @@ public class DbContext implements IServices {
         return user;
     }
 
-    public boolean registerUser(User userCredential){
+    public boolean registerUser(User userCredential) {
         PreparedStatement stmt = null;
         try {
             Connect();
@@ -173,7 +164,7 @@ public class DbContext implements IServices {
         }
     }
 
-    public void deleteUser(String name){
+    public void deleteUser(String name) {
         PreparedStatement stmt = null;
         try {
             Connect();
@@ -187,14 +178,17 @@ public class DbContext implements IServices {
             Disconnect(stmt, null);
         }
     }
-    public User validateUserCredential(String username, String hashedPassword){
+
+    public User validateUserCredential(String username, String hashedPassword) {
         User user = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
         try {
             AuthenticateService authenticateService = (AuthenticateService) servicesController.getService("AuthenticateService");
-            if (authenticateService == null) {throw new Exception("AuthenticateService is not registered");}
+            if (authenticateService == null) {
+                throw new Exception("AuthenticateService is not registered");
+            }
 
             Connect();
             stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
@@ -205,7 +199,7 @@ public class DbContext implements IServices {
                 // Get the hashed password from the database
                 String dbHashedPassword = rs.getString("password");
 
-                if (authenticateService.validatePassword(hashedPassword, dbHashedPassword)){
+                if (authenticateService.validatePassword(hashedPassword, dbHashedPassword)) {
                     user = new User(
                             rs.getInt("id"),
                             rs.getString("username"),
@@ -229,8 +223,10 @@ public class DbContext implements IServices {
         return user;
     }
 
-    public Truck getTruck(int id){
-        if (!isPermitted()) {return null;}
+    public Truck getTruck(int id) {
+        if (!isPermitted()) {
+            return null;
+        }
 
         Truck truck = null;
         PreparedStatement stmt = null;
@@ -254,7 +250,7 @@ public class DbContext implements IServices {
                         rs.getString("location"),
                         rs.getDouble("latitude"),
                         rs.getDouble("longitude")
-                    );
+                );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,8 +262,10 @@ public class DbContext implements IServices {
         return truck;
     }
 
-    public boolean createOrder(Order order){
-        if (!isPermitted()) {return false;}
+    public boolean createOrder(Order order) {
+        if (!isPermitted()) {
+            return false;
+        }
 
         PreparedStatement stmt = null;
 
@@ -276,7 +274,7 @@ public class DbContext implements IServices {
             String timeString;
             try {
                 timeString = String.valueOf(Time.valueOf(order.getPickupTime().toString()));
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 timeString = String.valueOf(Time.valueOf(order.getPickupTime().toString() + ":00"));
             }
 
@@ -307,8 +305,10 @@ public class DbContext implements IServices {
         }
     }
 
-    public void updateTruck(Truck truck){
-        if (!isPermitted()) {return;}
+    public void updateTruck(Truck truck) {
+        if (!isPermitted()) {
+            return;
+        }
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -336,8 +336,10 @@ public class DbContext implements IServices {
         }
     }
 
-    public Truck getTruckByName(String name){
-        if (!isPermitted()) {return null;}
+    public Truck getTruckByName(String name) {
+        if (!isPermitted()) {
+            return null;
+        }
 
         Truck truck = null;
         PreparedStatement stmt = null;
@@ -351,16 +353,16 @@ public class DbContext implements IServices {
 
             while (rs.next()) {
                 truck = new Truck(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getString("title"),
-                    rs.getString("image"),
-                    rs.getDouble("price"),
-                    rs.getInt("type"),
-                    rs.getString("location"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("title"),
+                        rs.getString("image"),
+                        rs.getDouble("price"),
+                        rs.getInt("type"),
+                        rs.getString("location"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
                 );
             }
         } catch (Exception e) {
@@ -372,15 +374,18 @@ public class DbContext implements IServices {
 
         return truck;
     }
-    private boolean isPermitted(){
+
+    private boolean isPermitted() {
         // check if the user is logged in
         // Simulate backend authentication
         AuthenticateService authenticateService = (AuthenticateService) servicesController.getService("AuthenticateService");
-        if (authenticateService == null) {throw new RuntimeException("AuthenticateService is not registered");}
+        if (authenticateService == null) {
+            throw new RuntimeException("AuthenticateService is not registered");
+        }
         if (!authenticateService.isSignedIn()) {
             if (Objects.equals(accessToken.getToken(), "")) {
                 throw new RuntimeException("User is not signed in");
-            }else{
+            } else {
                 loggingService.log("Access using one time token", LogTypes.INFO);
                 // token can only be used once
                 accessToken.dispose();
@@ -390,9 +395,11 @@ public class DbContext implements IServices {
         return true;
     }
 
-    public List<Truck> getTrucks(){
+    public List<Truck> getTrucks() {
 
-        if (!isPermitted()) {return null;}
+        if (!isPermitted()) {
+            return null;
+        }
 
         List<Truck> trucks = new ArrayList<>();
         PreparedStatement stmt = null;
@@ -426,6 +433,7 @@ public class DbContext implements IServices {
 
         return trucks;
     }
+
     public void Query(String query) {
 
     }
@@ -451,8 +459,10 @@ public class DbContext implements IServices {
         return serviceName;
     }
 
-    public Truck getTruckById(int id){
-        if (!isPermitted()) {return null;}
+    public Truck getTruckById(int id) {
+        if (!isPermitted()) {
+            return null;
+        }
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
@@ -463,28 +473,30 @@ public class DbContext implements IServices {
 
             if (rs.next()) {
                 return new Truck(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getString("title"),
-                    rs.getString("image"),
-                    rs.getDouble("price"),
-                    rs.getInt("type"),
-                    rs.getString("location"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("title"),
+                        rs.getString("image"),
+                        rs.getDouble("price"),
+                        rs.getInt("type"),
+                        rs.getString("location"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
                 );
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             Disconnect(stmt, rs);
         }
         return null;
     }
 
-    public Order getOrderByTruckId(int id){
-        if (!isPermitted()) {return null;}
+    public Order getOrderByTruckId(int id) {
+        if (!isPermitted()) {
+            return null;
+        }
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
@@ -495,68 +507,73 @@ public class DbContext implements IServices {
 
             if (rs.next()) {
                 return new Order(
-                    rs.getInt("id"),
-                    rs.getInt("user_id"),
-                    rs.getInt("vehicle_id"),
-                    rs.getString("receiver_name"),
-                    LocalDate.parse(rs.getDate("pickup_date").toString()),
-                    LocalTime.parse( rs.getTime("pickup_time").toString()),
-                    rs.getString("pickup_location"),
-                    rs.getString("good_type"),
-                    rs.getDouble("weight"),
-                    rs.getDouble("width"),
-                    rs.getDouble("length"),
-                    rs.getDouble("height"),
-                    TruckTypes.getTruckTypeName(rs.getInt("vehicle_type"))
+                        rs.getInt("id"),
+                        rs.getInt("user_id"),
+                        rs.getInt("vehicle_id"),
+                        rs.getString("receiver_name"),
+                        LocalDate.parse(rs.getDate("pickup_date").toString()),
+                        LocalTime.parse(rs.getTime("pickup_time").toString()),
+                        rs.getString("pickup_location"),
+                        rs.getString("good_type"),
+                        rs.getDouble("weight"),
+                        rs.getDouble("width"),
+                        rs.getDouble("length"),
+                        rs.getDouble("height"),
+                        TruckTypes.getTruckTypeName(rs.getInt("vehicle_type"))
                 );
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             Disconnect(stmt, rs);
         }
         return null;
     }
-    public List<Order> getTruckOrders(User user){
-        if(!isPermitted()){return null;}
+
+    public List<Order> getTruckOrders(User user) {
+        if (!isPermitted()) {
+            return null;
+        }
         List<Order> orders = new ArrayList<>();
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             Connect();
             stmt = connection.prepareStatement(
-                "SELECT * FROM orders WHERE user_id = ?"
+                    "SELECT * FROM orders WHERE user_id = ?"
             );
             stmt.setInt(1, user.getId());
             rs = stmt.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 orders.add(new Order(
-                    rs.getInt("id"),
-                    rs.getInt("user_id"),
-                    rs.getInt("vehicle_id"),
-                    rs.getString("receiver_name"),
-                    LocalDate.parse(rs.getDate("pickup_date").toString()),
-                    LocalTime.parse( rs.getTime("pickup_time").toString()),
-                    rs.getString("pickup_location"),
-                    rs.getString("good_type"),
-                    rs.getDouble("weight"),
-                    rs.getDouble("width"),
-                    rs.getDouble("length"),
-                    rs.getDouble("height"),
-                    TruckTypes.getTruckTypeName(rs.getInt("vehicle_type"))
+                        rs.getInt("id"),
+                        rs.getInt("user_id"),
+                        rs.getInt("vehicle_id"),
+                        rs.getString("receiver_name"),
+                        LocalDate.parse(rs.getDate("pickup_date").toString()),
+                        LocalTime.parse(rs.getTime("pickup_time").toString()),
+                        rs.getString("pickup_location"),
+                        rs.getString("good_type"),
+                        rs.getDouble("weight"),
+                        rs.getDouble("width"),
+                        rs.getDouble("length"),
+                        rs.getDouble("height"),
+                        TruckTypes.getTruckTypeName(rs.getInt("vehicle_type"))
                 ));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             Disconnect(stmt, rs);
         }
         return orders;
     }
 
     public List<Truck> getAvailableTrucks() {
-        if (!isPermitted()) {return null;}
+        if (!isPermitted()) {
+            return null;
+        }
 
         List<Truck> trucks = new ArrayList<>();
         PreparedStatement stmt = null;
@@ -573,16 +590,16 @@ public class DbContext implements IServices {
 
             while (rs.next()) {
                 trucks.add(new Truck(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getString("title"),
-                    rs.getString("image"),
-                    rs.getDouble("price"),
-                    rs.getInt("type"),
-                    rs.getString("location"),
-                    rs.getDouble("latitude"),
-                    rs.getDouble("longitude")
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getString("title"),
+                        rs.getString("image"),
+                        rs.getDouble("price"),
+                        rs.getInt("type"),
+                        rs.getString("location"),
+                        rs.getDouble("latitude"),
+                        rs.getDouble("longitude")
                 ));
             }
         } catch (Exception e) {

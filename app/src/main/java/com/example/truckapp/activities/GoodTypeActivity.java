@@ -36,12 +36,13 @@ public class GoodTypeActivity extends AppCompatActivity {
 
         // setup vehicle type spinner
         Spinner vehicleTypeSpinner = findViewById(R.id.goodtype_vehicle_type_spinner);
-        String [] vehicleTypes = TruckTypes.TRUCK_TYPES;
+        String[] vehicleTypes = TruckTypes.TRUCK_TYPES;
         ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vehicleTypes);
         vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
 
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,17 +128,17 @@ public class GoodTypeActivity extends AppCompatActivity {
 
             OrderController orderController = OrderController.getInstance();
             boolean isSucceed = orderController.create(new Order(
-                user.getId(),
-                Integer.parseInt(truckId),
-                receiverName,
-                LocalDate.parse(pickupDate, DateTimeFormatter.ofPattern("yyyy-M-d")),
-                LocalTime.parse(pickupTime),
-                pickupLocation, goodType,
-                Double.valueOf(weight),
-                Double.valueOf(width),
-                Double.valueOf(length),
-                Double.valueOf(height),
-                vehicleType)
+                    user.getId(),
+                    Integer.parseInt(truckId),
+                    receiverName,
+                    LocalDate.parse(pickupDate, DateTimeFormatter.ofPattern("yyyy-M-d")),
+                    LocalTime.parse(pickupTime),
+                    pickupLocation, goodType,
+                    Double.valueOf(weight),
+                    Double.valueOf(width),
+                    Double.valueOf(length),
+                    Double.valueOf(height),
+                    vehicleType)
             );
 
             if (isSucceed) {

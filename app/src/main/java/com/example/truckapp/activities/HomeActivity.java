@@ -26,6 +26,7 @@ public class HomeActivity extends AppCompatActivity {
     List<Truck> trucks;
 
     FloatingActionButton addDeliveryBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -52,23 +54,23 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         if (item.getItemId() == R.id.menu_main_items_home) {
-             // go to home
-             Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
-             startActivity(intent);
-             return true;
-         } else if (item.getItemId() == R.id.menu_main_items_account) {
-             int duration = Toast.LENGTH_SHORT;
-             Toast toast = Toast.makeText(this, "NOT_IMPLEMENTED", duration);
-             toast.show();
-             return true;
-         } else if (item.getItemId() == R.id.menu_main_items_my_orders) {
-             Intent intent = new Intent(HomeActivity.this, OrderActivity.class);
-             startActivity(intent);
-             return true;
-         } else {
-             return super.onOptionsItemSelected(item);
-         }
+        if (item.getItemId() == R.id.menu_main_items_home) {
+            // go to home
+            Intent intent = new Intent(HomeActivity.this, HomeActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.menu_main_items_account) {
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this, "NOT_IMPLEMENTED", duration);
+            toast.show();
+            return true;
+        } else if (item.getItemId() == R.id.menu_main_items_my_orders) {
+            Intent intent = new Intent(HomeActivity.this, OrderActivity.class);
+            startActivity(intent);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void setupTruckModel() {
