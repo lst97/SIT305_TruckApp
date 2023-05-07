@@ -1,6 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="369dp"
+            android:layout_height="541dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/order_truck_image"
+                android:layout_width="190dp"
+                android:layout_height="190dp"
+                android:layout_gravity="center"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/order_from_sender_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="From Sender: "
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/order_pickup_time_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pickup Time:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/order_to_receiver_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="To Receiver:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/order_dropoff_time_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dropoff Time:"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/order_weight_label"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/table_frame"
+                        android:gravity="center"
+                        android:stretchColumns="*" />
+
+                    <TextView
+                        android:id="@+id/order_type_label"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/table_frame"
+                        android:gravity="center"
+                        android:stretchColumns="*" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/order_width_label"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/table_frame"
+                        android:gravity="center"
+                        android:stretchColumns="*" />
+
+                    <TextView
+                        android:id="@+id/order_height_label"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/table_frame"
+                        android:gravity="center"
+                        android:stretchColumns="*" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/order_length_label"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/table_frame"
+                        android:gravity="center"
+                        android:stretchColumns="*" />
+
+                    <TextView
+                        android:id="@+id/order_quantity_label"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/table_frame"
+                        android:gravity="center"
+                        android:stretchColumns="*"
+                        android:text="Quantity: NOT_IMPLEMENTED" />
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="32dp" />
+
+        <Button
+            android:id="@+id/order_call_btn"
+            android:layout_width="358dp"
+            android:layout_height="62dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:text="Call Driver"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,4 +8,14 @@
     <string name="menu_main_account">Account</string>
     <string name="menu_main_home">Home</string>
     <string name="menu_main_my_orders">My Orders</string>
+
+    <string name="order_from_sender">From Sender: %1$s</string>
+    <string name="order_to_receiver">To Receiver: %1$s</string>
+    <string name="order_pickup_time">Pickup Time: %1$s</string>
+    <string name="order_dropoff_time">Dropoff Time: NOT_IMPLEMENTED</string>
+    <string name="order_weight">Weight: %1$s</string>
+    <string name="order_type">Type: %1$s</string>
+    <string name="order_width">Width: %1$s</string>
+    <string name="order_height">Height: %1$s</string>
+    <string name="order_length">Length: %1$s</string>
 </resources>

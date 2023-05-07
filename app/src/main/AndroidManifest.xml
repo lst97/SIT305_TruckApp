@@ -36,6 +36,7 @@
             android:theme="@style/Theme.Material3.DayNight.NoActionBar"
             />
         <activity android:name=".activities.OrderActivity" />
+        <activity android:name=".activities.OrderViewerActivity" />
 
     </application>
 

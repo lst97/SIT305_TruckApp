@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,7 +61,9 @@ public class OrderActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.menu_main_items_account) {
-            // NO REQUIRED FROM TASK
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this, "NOT_IMPLEMENTED", duration);
+            toast.show();
             return true;
         } else if (item.getItemId() == R.id.menu_main_items_my_orders) {
             Intent intent = new Intent(OrderActivity.this, OrderActivity.class);

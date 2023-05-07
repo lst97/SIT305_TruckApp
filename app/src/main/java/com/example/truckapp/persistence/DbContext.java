@@ -1,4 +1,6 @@
 package com.example.truckapp.persistence;
+import android.os.StrictMode;
+
 import com.example.truckapp.controllers.ServicesController;
 import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
@@ -7,6 +9,7 @@ import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.IServices;
 import com.example.truckapp.services.authenticate.AccessToken;
 import com.example.truckapp.services.authenticate.AuthenticateService;
+import com.example.truckapp.services.cookie.CookieService;
 import com.example.truckapp.services.log.LogTypes;
 import com.example.truckapp.services.log.LoggingService;
 
@@ -480,6 +483,40 @@ public class DbContext implements IServices {
         return null;
     }
 
+    public Order getOrderByTruckId(int id){
+        if (!isPermitted()) {return null;}
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            Connect();
+            stmt = connection.prepareStatement("SELECT * FROM orders WHERE vehicle_id = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Order(
+                    rs.getInt("id"),
+                    rs.getInt("user_id"),
+                    rs.getInt("vehicle_id"),
+                    rs.getString("receiver_name"),
+                    LocalDate.parse(rs.getDate("pickup_date").toString()),
+                    LocalTime.parse( rs.getTime("pickup_time").toString()),
+                    rs.getString("pickup_location"),
+                    rs.getString("good_type"),
+                    rs.getDouble("weight"),
+                    rs.getDouble("width"),
+                    rs.getDouble("length"),
+                    rs.getDouble("height"),
+                    TruckTypes.getTruckTypeName(rs.getInt("vehicle_type"))
+                );
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            Disconnect(stmt, rs);
+        }
+        return null;
+    }
     public List<Order> getTruckOrders(User user){
         if(!isPermitted()){return null;}
         List<Order> orders = new ArrayList<>();

@@ -32,6 +32,10 @@ public class OrderController implements IController{
         return dbContext.getTruckOrders(user);
     }
 
+    public Order getOrderByTruckId(int id) {
+        DbContext dbContext = (DbContext) servicesController.getService("DatabaseService");
+        return dbContext.getOrderByTruckId(id);
+    }
     @Override
     public void update(Object object) {
 
