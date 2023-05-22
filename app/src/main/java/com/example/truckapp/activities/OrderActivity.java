@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truckapp.R;
 import com.example.truckapp.adapters.TruckRecyclerViewAdapter;
-import com.example.truckapp.controllers.OrderController;
-import com.example.truckapp.controllers.ServicesController;
-import com.example.truckapp.controllers.TruckController;
+import com.example.truckapp.handlers.RepositoryHandler;
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.models.user.User;
+import com.example.truckapp.persistence.OrderRepository;
+import com.example.truckapp.persistence.TruckRepository;
 import com.example.truckapp.services.cookie.CookieService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -31,18 +32,18 @@ public class OrderActivity extends AppCompatActivity {
     List<Truck> trucks;
 
     FloatingActionButton addDeliveryBtn;
+    RecyclerView truckRecyclerView;
 
     private void setupTruckModel() {
-        OrderController orderController = OrderController.getInstance();
-
-        CookieService cookieService = (CookieService) ServicesController.getInstance().getService("CookieService");
+        OrderRepository orderRepository = (OrderRepository) RepositoryHandler.getInstance().getRepository("OrderRepository");
+        CookieService cookieService = (CookieService) ServicesHandler.getInstance().getService("CookieService");
         User user = cookieService.getUserSession();
-        orders = orderController.getOrders(user);
+        orders = orderRepository.getOrdersByUserId(user.getId());
 
         trucks = new ArrayList<>();
-        TruckController truckController = TruckController.getInstance();
+        TruckRepository truckRepository = (TruckRepository) RepositoryHandler.getInstance().getRepository("TruckRepository");
         for (Order order : orders) {
-            trucks.add(truckController.getTruckById(order.getVehicleId()));
+            trucks.add(truckRepository.read(order.getVehicleId()));
         }
     }
 
@@ -74,6 +75,23 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
+    private void initViews(){
+        addDeliveryBtn = findViewById(R.id.order_floating_new_order);
+        truckRecyclerView = findViewById(R.id.order_recycler_view);
+    }
+
+    private void setupAdapter(){
+        TruckRecyclerViewAdapter adapter = new TruckRecyclerViewAdapter(this, trucks);
+        truckRecyclerView.setAdapter(adapter);
+        truckRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void initListeners(){
+        addDeliveryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(OrderActivity.this, NewDeliveryActivity.class);
+            startActivity(intent);
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,19 +100,9 @@ public class OrderActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        addDeliveryBtn = findViewById(R.id.order_floating_new_order);
-        RecyclerView truckRecyclerView = findViewById(R.id.order_recycler_view);
-
+        initViews();
         setupTruckModel();
-
-        TruckRecyclerViewAdapter adapter = new TruckRecyclerViewAdapter(this, trucks);
-        truckRecyclerView.setAdapter(adapter);
-        truckRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        addDeliveryBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(OrderActivity.this, NewDeliveryActivity.class);
-            startActivity(intent);
-        });
+        setupAdapter();
+        initListeners();
     }
-
 }

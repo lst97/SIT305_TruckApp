@@ -1,4 +1,4 @@
-package com.example.truckapp.services.authenticate;
+package com.example.truckapp.utils;
 
 import org.mindrot.jbcrypt.BCrypt;
 

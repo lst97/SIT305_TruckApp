@@ -11,12 +11,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.truckapp.R;
-import com.example.truckapp.controllers.OrderController;
-import com.example.truckapp.controllers.ServicesController;
+import com.example.truckapp.handlers.RepositoryHandler;
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.models.order.GoodTypes;
 import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.TruckTypes;
 import com.example.truckapp.models.user.User;
+import com.example.truckapp.persistence.OrderRepository;
 import com.example.truckapp.services.cookie.CookieService;
 
 import java.time.LocalDate;
@@ -24,6 +25,17 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class GoodTypeActivity extends AppCompatActivity {
+
+    Spinner goodTypeSpinner;
+    EditText goodTypeOtherEditText;
+    EditText goodTypeWeightEditText;
+    EditText goodTypeHeightEditText;
+    EditText goodTypeWidthEditText;
+    EditText goodTypeLengthEditText;
+    Spinner vehicleTypeSpinner;
+    EditText vehicleTypeOtherEditText;
+    TextView goodTypeMessageTextView;
+    Button createOrderButton;
 
     private void setupSpinnerAdapter() {
 
@@ -43,25 +55,21 @@ public class GoodTypeActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delivery_good_type);
+    private void initViews() {
+        goodTypeSpinner = findViewById(R.id.goodtype_type_spinner);
+        goodTypeOtherEditText = findViewById(R.id.goodtype_type_other_input);
+        goodTypeWeightEditText = findViewById(R.id.goodtype_weight_input);
+        goodTypeHeightEditText = findViewById(R.id.goodtype_height_input);
+        goodTypeWidthEditText = findViewById(R.id.goodtype_width_input);
+        goodTypeLengthEditText = findViewById(R.id.goodtype_length_input);
+        vehicleTypeSpinner = findViewById(R.id.goodtype_vehicle_type_spinner);
+        vehicleTypeOtherEditText = findViewById(R.id.goodtype_vehicle_type_other_input);
+        goodTypeMessageTextView = findViewById(R.id.goodtype_message);
+        createOrderButton = findViewById(R.id.goodtype_create_order_btn);
 
+    }
 
-        Spinner goodTypeSpinner = findViewById(R.id.goodtype_type_spinner);
-        EditText goodTypeOtherEditText = findViewById(R.id.goodtype_type_other_input);
-        EditText goodTypeWeightEditText = findViewById(R.id.goodtype_weight_input);
-        EditText goodTypeHeightEditText = findViewById(R.id.goodtype_height_input);
-        EditText goodTypeWidthEditText = findViewById(R.id.goodtype_width_input);
-        EditText goodTypeLengthEditText = findViewById(R.id.goodtype_length_input);
-        Spinner vehicleTypeSpinner = findViewById(R.id.goodtype_vehicle_type_spinner);
-        EditText vehicleTypeOtherEditText = findViewById(R.id.goodtype_vehicle_type_other_input);
-        TextView goodTypeMessageTextView = findViewById(R.id.goodtype_message);
-        Button createOrderButton = findViewById(R.id.goodtype_create_order_btn);
-
-        setupSpinnerAdapter();
-
+    private void initListeners() {
         // set on click listener for create order button
         createOrderButton.setOnClickListener(v -> {
             // check if input is empty
@@ -123,11 +131,11 @@ public class GoodTypeActivity extends AppCompatActivity {
             String length = goodTypeLengthEditText.getText().toString();
 
             // get user id from CookieServices
-            CookieService cookieService = (CookieService) ServicesController.getInstance().getService("CookieService");
+            CookieService cookieService = (CookieService) ServicesHandler.getInstance().getService("CookieService");
             User user = cookieService.getUserSession();
 
-            OrderController orderController = OrderController.getInstance();
-            boolean isSucceed = orderController.create(new Order(
+            OrderRepository orderRepository = (OrderRepository) RepositoryHandler.getInstance().getRepository("OrderRepository");
+            boolean isSucceed = orderRepository.create(new Order(
                     user.getId(),
                     Integer.parseInt(truckId),
                     receiverName,
@@ -148,5 +156,14 @@ public class GoodTypeActivity extends AppCompatActivity {
                 goodTypeMessageTextView.setText("Something went wrong, please try again");
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_delivery_good_type);
+        initViews();
+        setupSpinnerAdapter();
+        initListeners();
     }
 }

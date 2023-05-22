@@ -1,8 +1,6 @@
 package com.example.truckapp.models.user;
 
-import com.example.truckapp.models.IModel;
-
-public class UserRole implements IModel {
+public class UserRole {
     private int id;
     private String roleName;
     private String description;

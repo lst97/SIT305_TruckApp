@@ -11,10 +11,13 @@ import android.os.StrictMode;
 import androidx.core.content.ContextCompat;
 
 import com.example.truckapp.activities.LoginActivity;
-import com.example.truckapp.controllers.ServicesController;
-import com.example.truckapp.controllers.TruckController;
+import com.example.truckapp.handlers.PostgresDatabaseHelper;
+import com.example.truckapp.handlers.RepositoryHandler;
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.models.truck.Truck;
-import com.example.truckapp.persistence.DbContext;
+import com.example.truckapp.persistence.OrderRepository;
+import com.example.truckapp.persistence.TruckRepository;
+import com.example.truckapp.persistence.UserRepository;
 import com.example.truckapp.services.authenticate.AccessToken;
 import com.example.truckapp.services.authenticate.AuthenticateService;
 import com.example.truckapp.services.cookie.CookieService;
@@ -24,28 +27,30 @@ import com.example.truckapp.utils.ImageUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class TruckApp extends Activity {
-    private void initializeServices() {
+    private void initializeServices(ServicesHandler servicesHandler) {
         // service will be start automatically
-        ServicesController servicesController = ServicesController.getInstance();
-        servicesController.addService("LoggingService", LoggingService.class.getName(), false);
+        servicesHandler.addService("CookieService", new CookieService(), true);
+        ((CookieService) Objects.requireNonNull(servicesHandler.getService("CookieService"))).setContext(this);
 
-        servicesController.addService("CookieService", CookieService.class.getName(), true);
-        ((CookieService) Objects.requireNonNull(servicesController.getService("CookieService"))).setContext(this);
+        servicesHandler.addService("AuthenticateService", new AuthenticateService(), true);
+    }
 
-        servicesController.addService("DatabaseService", DbContext.class.getName(), true);
-        servicesController.addService("AuthenticateService", AuthenticateService.class.getName(), true);
+    private void initializeRepository() {
+        PostgresDatabaseHelper postgresDatabaseHelper = new PostgresDatabaseHelper();
+        RepositoryHandler repositoryHandler = RepositoryHandler.getInstance();
+        repositoryHandler.addRepository("TruckRepository", new TruckRepository(postgresDatabaseHelper));
+        repositoryHandler.addRepository("OrderRepository", new OrderRepository(postgresDatabaseHelper));
+        repositoryHandler.addRepository("UserRepository", new UserRepository(postgresDatabaseHelper));
     }
 
     private void updateTrucksImage() {
 
-        TruckController truckController = TruckController.getInstance();
+        TruckRepository truckRepository = (TruckRepository) RepositoryHandler.getInstance().getRepository("TruckRepository");
 
-        // Database is not allowed to be use if the user is not logged in
-        // unless the access token is set
-        List<Truck> trucks = truckController.read(new AccessToken()).stream().map(truck -> (Truck) truck).collect(Collectors.toList());
+        truckRepository.setAccessToken(new AccessToken());
+        List<Truck> trucks = truckRepository.readAll();
 
         List<Drawable> drawables = new ArrayList<>();
         drawables.add(ContextCompat.getDrawable(this, R.drawable.nelson_realistic_mini_truck_natural_light_f348aa80_d0b5_4f64_949c_6fc3fe7629d7));
@@ -66,7 +71,10 @@ public class TruckApp extends Activity {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             trucks.get(i).setImage(ImageUtil.encodeImage(bitmap));
 
-            truckController.update(trucks.get(i), new AccessToken());
+            // Database is not allowed to be use if the user is not logged in
+            // unless the access token is set
+            truckRepository.setAccessToken(new AccessToken());
+            truckRepository.update(trucks.get(i));
         }
     }
 
@@ -76,10 +84,15 @@ public class TruckApp extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        initializeServices();
+        ServicesHandler servicesHandler = ServicesHandler.getInstance();
+        servicesHandler.addService("LoggingService", new LoggingService(), false);
+
+        // repository require logging service to be initialized first
+        initializeRepository();
+        initializeServices(servicesHandler);
 
         // clear user session (the app do not support remember me function)
-        CookieService cookieService = (CookieService) ServicesController.getInstance().getService("CookieService");
+        CookieService cookieService = (CookieService) ServicesHandler.getInstance().getService("CookieService");
         cookieService.removeUserSession();
 
         // this should the backend job, but since I did not create the backend

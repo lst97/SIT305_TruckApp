@@ -16,10 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truckapp.R;
 import com.example.truckapp.activities.OrderViewerActivity;
-import com.example.truckapp.controllers.OrderController;
-import com.example.truckapp.controllers.ServicesController;
+import com.example.truckapp.handlers.RepositoryHandler;
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
+import com.example.truckapp.persistence.OrderRepository;
 import com.example.truckapp.services.cookie.CookieService;
 import com.example.truckapp.utils.ImageUtil;
 
@@ -29,12 +30,12 @@ public class TruckRecyclerViewAdapter extends RecyclerView.Adapter<TruckRecycler
 
     Context context;
     List<Truck> trucks;
-    ServicesController servicesController;
+    ServicesHandler servicesHandler;
 
     public TruckRecyclerViewAdapter(Context context, List<Truck> trucks) {
         this.context = context;
         this.trucks = trucks;
-        servicesController = ServicesController.getInstance();
+        servicesHandler = ServicesHandler.getInstance();
     }
 
     @NonNull
@@ -60,11 +61,10 @@ public class TruckRecyclerViewAdapter extends RecyclerView.Adapter<TruckRecycler
 
         // set card on click listener
         holder.itemView.setOnClickListener(v -> {
-            OrderController orderController = OrderController.getInstance();
-            CookieService cookieService = (CookieService) servicesController.getService("CookieService");
-            List<Order> orders = orderController.getOrders(cookieService.getUserSession());
+            OrderRepository orderRepository = (OrderRepository) RepositoryHandler.getInstance().getRepository("OrderRepository");
+            CookieService cookieService = (CookieService) servicesHandler.getService("CookieService");
+            List<Order> orders = orderRepository.getOrdersByUserId(cookieService.getUserSession().getId());
 
-            // check if the truck is not available/booked by the user
             for (Order order : orders) {
                 if (order.getVehicleId() == trucks.get(position).getId()) {
                     Intent intent = new Intent(context, OrderViewerActivity.class);

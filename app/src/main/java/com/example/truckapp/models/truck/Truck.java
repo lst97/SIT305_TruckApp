@@ -1,18 +1,17 @@
 package com.example.truckapp.models.truck;
 
-import com.example.truckapp.models.IModel;
 
-public class Truck implements IModel {
+public class Truck {
     private int id;
     private String name;
-    private String description;
-    private String title;
+    private final String description;
+    private final String title;
     private String image;
-    private double price;
-    private int type;
-    private String location;
-    private double latitude;
-    private double longitude;
+    private final double price;
+    private final int type;
+    private final String location;
+    private final double latitude;
+    private final double longitude;
 
     public Truck(int id, String name, String description, String title, String image, double price, int type, String location, double latitude, double longitude) {
         this.id = id;
@@ -25,9 +24,6 @@ public class Truck implements IModel {
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public Truck() {
     }
 
     public int getId() {
@@ -50,17 +46,11 @@ public class Truck implements IModel {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public String getImage() {
         return image;
@@ -74,41 +64,28 @@ public class Truck implements IModel {
         return price;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
 
     public int getType() {
         return type;
     }
 
-    public void setType(int type) {
-        this.type = type;
-    }
 
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
 
     public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
+
 
     public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
+
 
 
 }

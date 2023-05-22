@@ -3,7 +3,6 @@ package com.example.truckapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,11 +10,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.truckapp.R;
-import com.example.truckapp.controllers.ServicesController;
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.models.user.Roles;
 import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.authenticate.AuthenticateService;
-import com.example.truckapp.services.authenticate.PasswordHasher;
+import com.example.truckapp.utils.PasswordHasher;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -30,6 +29,27 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView messageTextView;
     private Button registerButton;
 
+    private void initViews() {
+        fullNameEditText = findViewById(R.id.register_full_name_input);
+        usernameEditText = findViewById(R.id.register_username_input);
+        passwordEditText = findViewById(R.id.register_password_input);
+        confirmPasswordEditText = findViewById(R.id.register_confirm_password_input);
+        phoneEditText = findViewById(R.id.register_phone_input);
+        messageTextView = findViewById(R.id.register_message);
+        registerButton = findViewById(R.id.register_create_account_button);
+    }
+
+    private void initListeners() {
+        // set click listener for register button
+        registerButton.setOnClickListener(v -> {
+            registerUser();
+
+            // show login activity
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,26 +59,8 @@ public class RegisterActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        // Find views by ID
-        fullNameEditText = findViewById(R.id.register_full_name_input);
-        usernameEditText = findViewById(R.id.register_username_input);
-        passwordEditText = findViewById(R.id.register_password_input);
-        confirmPasswordEditText = findViewById(R.id.register_confirm_password_input);
-        phoneEditText = findViewById(R.id.register_phone_input);
-        messageTextView = findViewById(R.id.register_message);
-        registerButton = findViewById(R.id.register_create_account_button);
-
-        // set click listener for register button
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerUser();
-
-                // show login activity
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        initViews();
+        initListeners();
     }
 
     private void registerUser() {
@@ -103,8 +105,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Authenticate user (e.g. by sending login request to server)
         // use LoginService to login
-        ServicesController servicesController = ServicesController.getInstance();
-        AuthenticateService authenticateService = (AuthenticateService) servicesController.getService("AuthenticateService");
+        ServicesHandler servicesHandler = ServicesHandler.getInstance();
+        AuthenticateService authenticateService = (AuthenticateService) servicesHandler.getService("AuthenticateService");
         if (authenticateService == null) {
             throw new NullPointerException("AuthenticateService not found");
         }

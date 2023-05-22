@@ -1,49 +1,39 @@
 package com.example.truckapp.services.authenticate;
 
-import com.example.truckapp.controllers.ServicesController;
+import com.example.truckapp.handlers.RepositoryHandler;
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.models.user.User;
-import com.example.truckapp.persistence.DbContext;
-import com.example.truckapp.services.IServices;
+import com.example.truckapp.persistence.UserRepository;
+import com.example.truckapp.services.ServiceFactory;
 import com.example.truckapp.services.cookie.CookieService;
 import com.example.truckapp.services.log.LoggingService;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import kotlin.NotImplementedError;
-
-public class AuthenticateService implements IAuthenticateService, IServices {
-    private final DbContext dbContext;
+public class AuthenticateService implements AuthenticateServiceFactory, ServiceFactory {
     private String serviceName;
-    private ServicesController servicesController;
     private LoggingService loggingService;
-    private boolean status = false;
+    private CookieService cookieService;
+    private UserRepository userRepository;
 
-    public AuthenticateService(String name, ServicesController servicesCtrl, boolean useLoggingService) {
-        servicesController = servicesCtrl;
-        if (useLoggingService) {
-            loggingService = (LoggingService) servicesController.getService(name);
+    public AuthenticateService() {
+
+        onCreate();
+    }
+
+    private void onCreate() {
+        loggingService = (LoggingService) ServicesHandler.getInstance().getService("LoggingService");
+        cookieService = (CookieService) ServicesHandler.getInstance().getService("CookieService");
+        userRepository = (UserRepository) RepositoryHandler.getInstance().getRepository("UserRepository");
+        if (loggingService == null) {
+            throw new RuntimeException("LoggingService is not registered");
         }
-
-        serviceName = name;
-        dbContext = (DbContext) servicesController.getService("DatabaseService");
-        start();
-    }
-
-    public int start() {
-        status = true;
-        return 0;
-    }
-
-    public int stop() {
-        status = false;
-        return 0;
-    }
-
-    public boolean isSignedIn() {
-        CookieService cookieService = (CookieService) servicesController.getService("CookieService");
         if (cookieService == null) {
             throw new RuntimeException("CookieService is not registered");
         }
+    }
+
+    public boolean isSignedIn() {
         return cookieService.getUserSession() != null;
     }
 
@@ -53,28 +43,30 @@ public class AuthenticateService implements IAuthenticateService, IServices {
     }
 
     @Override
-    public User login(User user) {
-        if (status) {
-            User userCredential = dbContext.validateUser(user.getUsername());
-            ;
+    public void setServiceName(String name) {
+        this.serviceName = name;
+    }
 
-            // null if user does not exist
-            //
-            if (userCredential != null) {
-                // user exists
-                // check password
-                User MappedUserCredential = dbContext.validateUserCredential(user.getUsername(), user.getPassword());
-                if (MappedUserCredential == null) {
-                    // user exists and password is incorrect
-                    // password will set to ""
-                    return userCredential;
-                }
-                // Mapped userCredential
-                return MappedUserCredential;
+    @Override
+    public void setLogService(LoggingService loggingService) {
+        this.loggingService = loggingService;
+    }
+
+    @Override
+    public User login(User user) {
+        // Refactor
+        User userFromDatabase = userRepository.read(user.getUsername());
+
+        if (userFromDatabase != null) {
+            // user exists
+            // check password
+            if (validatePassword(user.getPassword(), userFromDatabase.getPassword())) {
+                // password is correct
+                // set cookie
+                cookieService.addUserSession(userFromDatabase);
+                return userFromDatabase;
             }
-            return null;
         }
-        // server is not running
         return null;
     }
 
@@ -84,15 +76,16 @@ public class AuthenticateService implements IAuthenticateService, IServices {
 
     @Override
     public boolean register(User user) {
-        return dbContext.registerUser(user);
+        return userRepository.create(user);
     }
 
     @Override
     public void logout() {
-        throw new NotImplementedError("Not implemented");
+        CookieService cookieService = (CookieService) ServicesHandler.getInstance().getService("CookieService");
+        cookieService.removeUserSession();
     }
 
     public boolean isUserExist(String username) {
-        return dbContext.validateUser(username) != null;
+        return userRepository.read(username) != null;
     }
 }

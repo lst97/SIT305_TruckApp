@@ -14,10 +14,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.truckapp.R;
-import com.example.truckapp.controllers.OrderController;
-import com.example.truckapp.controllers.TruckController;
+import com.example.truckapp.handlers.RepositoryHandler;
 import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.Truck;
+import com.example.truckapp.persistence.OrderRepository;
+import com.example.truckapp.persistence.TruckRepository;
 import com.example.truckapp.utils.ImageUtil;
 
 public class OrderViewerActivity extends AppCompatActivity {
@@ -36,14 +37,8 @@ public class OrderViewerActivity extends AppCompatActivity {
     Order order;
     Truck truck;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_viewer);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
+    private void initViews() {
         fromSenderTextView = findViewById(R.id.order_from_sender_label);
         toReceiverTextView = findViewById(R.id.order_to_receiver_label);
         pickupTimeTextView = findViewById(R.id.order_pickup_time_label);
@@ -55,19 +50,42 @@ public class OrderViewerActivity extends AppCompatActivity {
         lengthTextView = findViewById(R.id.order_length_label);
         callButton = findViewById(R.id.order_call_btn);
         truckImage = findViewById(R.id.order_truck_image);
+    }
 
+    private void initData() {
         // get truckId from intent
         Intent intent = getIntent();
         int truckId = intent.getIntExtra("truckId", -1);
 
         // get truck image
-        TruckController truckController = TruckController.getInstance();
-        truck = truckController.getTruckById(truckId);
+        TruckRepository truckRepository = (TruckRepository) RepositoryHandler.getInstance().getRepository("TruckRepository");
+        truck = truckRepository.read(truckId);
         truckImage.setImageBitmap(ImageUtil.decodeImage(truck.getImage()));
 
         // get orders from truckId
-        OrderController orderController = OrderController.getInstance();
-        order = orderController.getOrderByTruckId(truckId);
+        OrderRepository orderRepository = (OrderRepository) RepositoryHandler.getInstance().getRepository("OrderRepository");
+        order = orderRepository.getOrderByTruckId(truckId);
+    }
+
+    private void initListeners() {
+        callButton.setOnClickListener(v -> {
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(android.net.Uri.parse("tel:" + "123456789"));
+            startActivity(callIntent);
+        });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_order_viewer);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        initViews();
+        initData();
+        initListeners();
 
         fromSenderTextView.setText(getString(R.string.order_from_sender, truck.getName()));
         toReceiverTextView.setText(getString(R.string.order_to_receiver, order.getReceiverName()));
@@ -78,13 +96,6 @@ public class OrderViewerActivity extends AppCompatActivity {
         widthTextView.setText(getString(R.string.order_width, order.getWidth().toString()));
         heightTextView.setText(getString(R.string.order_height, order.getHeight().toString()));
         lengthTextView.setText(getString(R.string.order_length, order.getLength().toString()));
-
-        // set call button onclick listener
-        callButton.setOnClickListener(v -> {
-            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(android.net.Uri.parse("tel:" + "123456789"));
-            startActivity(callIntent);
-        });
 
     }
 

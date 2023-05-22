@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.truckapp.adapters.LocalDateTimeAdapter;
-import com.example.truckapp.controllers.ServicesController;
 import com.example.truckapp.fasterxml.modules.LocalDateTimeModule;
 import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.log.LoggingService;
@@ -16,34 +15,18 @@ import com.google.gson.GsonBuilder;
 
 import java.time.LocalDateTime;
 
-import kotlin.NotImplementedError;
 
-
-public class CookieService implements ICookie {
-    private static boolean status = false;
-    private final String serviceName;
-    private ServicesController servicesController;
+public class CookieService implements CookieFactory {
+    private String serviceName;
     private Context applicationContext;
     private LoggingService loggingService = null;
 
-    public CookieService(String name, ServicesController servicesCtrl, boolean useLoggingService) {
-        servicesController = servicesCtrl;
-        if (useLoggingService) {
-            loggingService = (LoggingService) servicesController.getService(name);
-        }
-
-        serviceName = name;
-        start();
+    public CookieService() {
+        onCreate();
     }
 
-    public int start() {
-        status = true;
-        return 0;
-    }
+    private void onCreate() {
 
-    public int stop() {
-        status = false;
-        return 0;
     }
 
     public void setContext(Context context) {
@@ -117,23 +100,17 @@ public class CookieService implements ICookie {
     }
 
     @Override
-    public void addCookie(String name) {
-        // not yet used
-        throw new NotImplementedError();
-    }
-
-    @Override
-    public void removeCookie() {
-
-    }
-
-    @Override
-    public SharedPreferences getCookie(String name) {
-        throw new NotImplementedError();
-    }
-
-    @Override
     public String getServiceName() {
         return serviceName;
+    }
+
+    @Override
+    public void setServiceName(String name) {
+        this.serviceName = name;
+    }
+
+    @Override
+    public void setLogService(LoggingService loggingService) {
+        this.loggingService = loggingService;
     }
 }

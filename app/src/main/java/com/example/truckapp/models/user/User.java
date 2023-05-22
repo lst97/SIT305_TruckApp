@@ -1,12 +1,10 @@
 package com.example.truckapp.models.user;
 
-import com.example.truckapp.models.IModel;
-
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-public class User implements IModel {
+public class User {
     private int id;
     private String username;
     private String password;
@@ -114,17 +112,10 @@ public class User implements IModel {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public int getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
 
     public String getFullName() {
         return fullName;
@@ -132,5 +123,13 @@ public class User implements IModel {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
     }
 }

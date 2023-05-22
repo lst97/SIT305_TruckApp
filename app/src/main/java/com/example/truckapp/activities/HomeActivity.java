@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.truckapp.R;
 import com.example.truckapp.adapters.TruckRecyclerViewAdapter;
-import com.example.truckapp.controllers.TruckController;
+import com.example.truckapp.handlers.RepositoryHandler;
 import com.example.truckapp.models.truck.Truck;
+import com.example.truckapp.persistence.TruckRepository;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -26,23 +27,32 @@ public class HomeActivity extends AppCompatActivity {
     List<Truck> trucks;
 
     FloatingActionButton addDeliveryBtn;
+    RecyclerView truckRecyclerView;
+
+    private void initViews() {
+        truckRecyclerView = findViewById(R.id.home_recycler_view);
+        addDeliveryBtn = findViewById(R.id.home_floating_new_order);
+    }
+
+    private void initListeners() {
+        addDeliveryBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, NewDeliveryActivity.class);
+            startActivity(intent);
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        RecyclerView truckRecyclerView = findViewById(R.id.home_recycler_view);
+        initViews();
         setupTruckModel();
         TruckRecyclerViewAdapter adapter = new TruckRecyclerViewAdapter(this, trucks);
         truckRecyclerView.setAdapter(adapter);
         truckRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        addDeliveryBtn = findViewById(R.id.home_floating_new_order);
-        addDeliveryBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, NewDeliveryActivity.class);
-            startActivity(intent);
-        });
+        initListeners();
     }
 
     @Override
@@ -74,7 +84,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setupTruckModel() {
-        TruckController truckController = TruckController.getInstance();
-        trucks = truckController.getAvailableTrucks();
+        TruckRepository truckRepository = (TruckRepository) RepositoryHandler.getInstance().getRepository("TruckRepository");
+        trucks = truckRepository.getAvailableTrucks();
     }
 }
