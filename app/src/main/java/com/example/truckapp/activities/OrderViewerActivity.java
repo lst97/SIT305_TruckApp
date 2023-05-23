@@ -48,7 +48,7 @@ public class OrderViewerActivity extends AppCompatActivity {
         widthTextView = findViewById(R.id.order_width_label);
         heightTextView = findViewById(R.id.order_height_label);
         lengthTextView = findViewById(R.id.order_length_label);
-        callButton = findViewById(R.id.order_call_btn);
+        callButton = findViewById(R.id.order_get_estimate);
         truckImage = findViewById(R.id.order_truck_image);
     }
 
@@ -69,8 +69,7 @@ public class OrderViewerActivity extends AppCompatActivity {
 
     private void initListeners() {
         callButton.setOnClickListener(v -> {
-            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(android.net.Uri.parse("tel:" + "123456789"));
+            Intent callIntent = new Intent(OrderViewerActivity.this, EstimateActivity.class);
             startActivity(callIntent);
         });
     }

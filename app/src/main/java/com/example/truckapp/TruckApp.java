@@ -11,9 +11,9 @@ import android.os.StrictMode;
 import androidx.core.content.ContextCompat;
 
 import com.example.truckapp.activities.LoginActivity;
-import com.example.truckapp.handlers.PostgresDatabaseHelper;
 import com.example.truckapp.handlers.RepositoryHandler;
 import com.example.truckapp.handlers.ServicesHandler;
+import com.example.truckapp.helpers.PostgresDatabaseHelper;
 import com.example.truckapp.models.truck.Truck;
 import com.example.truckapp.persistence.OrderRepository;
 import com.example.truckapp.persistence.TruckRepository;

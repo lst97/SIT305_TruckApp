@@ -1,5 +1,6 @@
-package com.example.truckapp.handlers;
+package com.example.truckapp.helpers;
 
+import com.example.truckapp.handlers.ServicesHandler;
 import com.example.truckapp.services.log.LoggingService;
 
 import java.sql.Connection;

@@ -1,7 +1,7 @@
 package com.example.truckapp.persistence;
 
-import com.example.truckapp.handlers.PostgresDatabaseHelper;
 import com.example.truckapp.handlers.ServicesHandler;
+import com.example.truckapp.helpers.PostgresDatabaseHelper;
 import com.example.truckapp.models.order.Order;
 import com.example.truckapp.models.truck.TruckTypes;
 import com.example.truckapp.services.authenticate.AccessToken;

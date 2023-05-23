@@ -155,12 +155,12 @@
             android:layout_height="32dp" />
 
         <Button
-            android:id="@+id/order_call_btn"
+            android:id="@+id/order_get_estimate"
             android:layout_width="358dp"
             android:layout_height="62dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:text="Call Driver"
+            android:text="Get Estimate"
             android:textSize="20sp"
             android:textStyle="bold" />
 

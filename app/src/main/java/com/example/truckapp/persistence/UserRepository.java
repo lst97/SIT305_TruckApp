@@ -1,7 +1,7 @@
 package com.example.truckapp.persistence;
 
-import com.example.truckapp.handlers.PostgresDatabaseHelper;
 import com.example.truckapp.handlers.ServicesHandler;
+import com.example.truckapp.helpers.PostgresDatabaseHelper;
 import com.example.truckapp.models.user.User;
 import com.example.truckapp.services.authenticate.AccessToken;
 import com.example.truckapp.services.log.LogTypes;
@@ -9,14 +9,9 @@ import com.example.truckapp.services.log.LoggingService;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 
